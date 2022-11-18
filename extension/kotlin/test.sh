@@ -1,0 +1,2 @@
+kotlinc anticapitalize.kt
+kotlin AnticapitalizeKt
