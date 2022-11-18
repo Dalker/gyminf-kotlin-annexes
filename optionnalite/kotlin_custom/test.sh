@@ -1,0 +1,2 @@
+kotlinc *.kt
+kotlin OptionExampleKt
