@@ -1,26 +1,27 @@
 package complex.composition
 import kotlin.math.*
 
-data class ComplexComp(val re: Double, val im: Double) {
+data class ComplexCompRad(val re: Double, val im: Double) {
     override fun toString() = "$re + ${im}i"
     val mod: Double
         get() = sqrt(re * re + im *im)
     val arg: Double // le donner entre -pi et pi
         get() = when {
-            im == 0.0 -> 0.0 // arbitraire, pour éviter exception
+            im == 0.0 && re >= 0 -> 0.0
+            im == 0.0 -> PI
             re >= 0 -> atan(re / im)
             im > 0 -> atan(re / im) + PI
             else -> atan(re / im) - PI
         }
-    fun pow(n: Int): ComplexComp {
+    fun pow(n: Int): ComplexCompRad {
         val mod = mod.pow(n)
         val arg = arg * n
-        return ComplexComp(mod * cos(arg), mod * sin(arg))
+        return ComplexCompRad(mod * cos(arg), mod * sin(arg))
     }
 }
 
-class ComplexCompDeg(val z: ComplexComp) {
-    constructor(re: Double, im: Double): this(ComplexComp(re, im))
+class ComplexCompDeg(a: Double, b: Double) {
+    private val z = ComplexCompRad(a, b)
     override fun toString() = z.toString()
     val re = z.re
     val im = z.im

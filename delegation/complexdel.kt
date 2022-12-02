@@ -1,35 +1,36 @@
 package complex.delegation
 import kotlin.math.*
 
-interface ComplexDelInt {
+interface Complex {
     val re: Double
     val im: Double
     val mod: Double
     val arg: Double
-    fun pow(n: Int): ComplexDelInt
+    fun pow(n: Int): Complex
 }
 
-data class ComplexDel(override val re: Double,
-                   override val im: Double): ComplexDelInt {
+data class ComplexDelRad(override val re: Double,
+                         override val im: Double): Complex {
     override fun toString() = "$re + ${im}i"
     override val mod: Double
         get() = sqrt(re * re + im *im)
     override val arg: Double // le donner entre -pi et pi
         get() = when {
-            im == 0.0 -> 0.0 // arbitraire, pour éviter exception
+            im == 0.0 && re >= 0 -> 0.0
+            im == 0.0 -> PI
             re >= 0 -> atan(re / im)
             im > 0 -> atan(re / im) + PI
             else -> atan(re / im) - PI
         }
-    override fun pow(n: Int): ComplexDel {
+    override fun pow(n: Int): ComplexDelRad {
         val mod = mod.pow(n)
         val arg = arg * n
-        return ComplexDel(mod * cos(arg), mod * sin(arg))
+        return ComplexDelRad(mod * cos(arg), mod * sin(arg))
     }
 }
 
-class ComplexDelDeg(val z: ComplexDelInt): ComplexDelInt by z {
-    constructor(re: Double, im: Double): this(ComplexDel(re, im))
+data class ComplexDelDeg private constructor(private val z: Complex): Complex by z {
+    constructor(a: Double, b: Double): this(ComplexDelRad(a, b))
     override fun toString() = z.toString()
     override val arg: Double
         get() = z.arg * 180 / PI

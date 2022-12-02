@@ -1,24 +1,26 @@
 package complex.inheritance
 import kotlin.math.*
 
-open class ComplexInh(val a: Double, val b: Double) {
-    override fun toString() = "$a + ${b}i"
+open class ComplexInhRad(val re: Double, val im: Double) {
+    override fun toString() = "$re + ${im}i"
     val mod: Double
-        get() = sqrt(a*a + b*b)
+        get() = sqrt(re*re + im*im)
     open val arg: Double
         get() = when {
-            a > 0 -> atan(a / b)
-            b > 0 -> atan(a / b) + PI
-            else -> atan(a / b) - PI
+            im == 0.0 && re >= 0 -> 0.0
+            im == 0.0 -> PI
+            re >= 0 -> atan(re / im)
+            im > 0 -> atan(re / im) + PI
+            else -> atan(re / im) - PI
         }
-    fun pow(n: Int): ComplexInh {
+    fun pow(n: Int): ComplexInhRad {
         val m = mod.pow(n)
         val a = arg * n
-        return ComplexInh(m * cos(a), m * sin(a))
+        return ComplexInhRad(m * cos(a), m * sin(a))
     }
 }
 
-class ComplexInhDeg(a: Double, b: Double): ComplexInh(a, b) {
+class ComplexInhDeg(re: Double, im: Double): ComplexInhRad(re, im) {
     override val arg: Double
         get() = super.arg * 180 / PI
 }
