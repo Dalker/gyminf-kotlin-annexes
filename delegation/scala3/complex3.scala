@@ -1,11 +1,10 @@
 import scala.math._
-import scala.language.implicitConversions
 
 trait Complex {
-  val re: Double
-  val im: Double
-  val mod: Double
-  val arg: Double
+  def re: Double
+  def im: Double
+  def mod: Double
+  def arg: Double
   def pow(n: Int): Complex
 }
 
@@ -25,26 +24,22 @@ case class ComplexRad(val re: Double, val im: Double) extends Complex {
   }
 }
 
-case class ComplexDeg(re: Double, im: Double) {
+case class ComplexDeg(re: Double, im: Double) extends Complex {
   override def toString() = "%f + %fi".format(re, im)
   private val z = new ComplexRad(re, im)
   val arg = z.arg * 180 / Pi
-  export z.{ given Complex } // délègue les méthodes pas encore implémentées
+  export z.{mod, pow}
 }
 
 object Tests extends App {
-  val phrase = "Le nombre z=%s a comme argument %f"
-  val z = new ComplexRad(1, 1)
-  println(phrase.format(z, z.arg))
-  List(3, 5, 7).foreach { n =>
-    val zp = z.pow(n)
-    println(phrase.format(zp, zp.arg))
-  }
+  val phrase = "Le nombre z=%s a comme argument %f et module %f"
+  val z1 = new ComplexRad(1, 1)
   val z2 = new ComplexDeg(1, 1)
-  println(phrase.format(z2, z2.arg))
-  List(3, 5, 7).foreach { n =>
-    val zpr = z.pow(n)
-    val zpd = new ComplexDeg(zpr.re, zpr.im)
-    println(phrase.format(zpd, zpd.arg))
+  List(z1, z2).foreach { z =>
+    println(phrase.format(z, z.arg, z.mod))
+    List(3, 5, 7).foreach { n =>
+      val zp = z.pow(n)
+      println(phrase.format(zp, zp.arg, zp.mod))
+    }
   }
 }
